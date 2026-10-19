@@ -81,12 +81,12 @@
     const setMsg=(s,err=false)=>{msg.textContent=s;msg.classList.toggle('error',err)};
     if(!db()){setMsg('اتصال Supabase آماده نیست؛ تنظیمات را بررسی کن.',true);return;}
     const {data:{session}}=await db().auth.getSession();
-    if(session){form.classList.add('hidden');signed.classList.remove('hidden');signed.innerHTML='<b>وارد شدی.</b><p>'+escapeHtml(session.user.email)+'</p><a class="btn btn-primary" href="admin.html">رفتن به پنل مدیریت</a> <button class="btn btn-outline" id="logout-btn">خروج</button>';$('#logout-btn').onclick=async()=>{await db().auth.signOut();location.reload();};}
+    if(session){form.classList.add('hidden');signed.classList.remove('hidden');signed.innerHTML='<b>وارد شدی.</b><p>'+escapeHtml(session.user.email)+'</p><a class="btn btn-primary" href="index.html">رفتن به فروشگاه</a> <a class="btn btn-outline" href="admin.html">پنل مدیریت</a> <button class="btn btn-outline" id="logout-btn">خروج</button>';$('#logout-btn').onclick=async()=>{await db().auth.signOut();location.reload();};}
     switchBtn.onclick=()=>{signupMode=!signupMode;heading.textContent=signupMode?'ساخت حساب کاربری':'ورود به حساب';subtitle.textContent=signupMode?'با ایمیل خودت یک حساب بساز.':'برای پیگیری سفارش‌ها وارد حساب خودت شو.';submit.innerHTML=signupMode?'ساخت حساب <span>←</span>':'ورود <span>←</span>';switchBtn.textContent=signupMode?'ورود به حساب':'ساخت حساب';$('#switch-text').textContent=signupMode?'قبلاً حساب ساخته‌ای؟':'حساب کاربری نداری؟';$('#auth-password').autocomplete=signupMode?'new-password':'current-password';setMsg('');};
     form.onsubmit=async e=>{e.preventDefault();submit.disabled=true;setMsg('در حال انجام…');const email=$('#auth-email').value.trim(),password=$('#auth-password').value;let result;
       try{result=signupMode?await db().auth.signUp({email,password}):await db().auth.signInWithPassword({email,password});if(result.error)throw result.error;
         if(signupMode&&!result.data.session){setMsg('حساب ساخته شد. اگر تأیید ایمیل فعال باشد، ایمیلت را بررسی کن.');}
-        else{setMsg('ورود موفق بود. در حال انتقال…');setTimeout(()=>location.href=new URLSearchParams(location.search).get('next')==='cart.html'?'cart.html':'admin.html',650);}
+        else{setMsg('ورود موفق بود. در حال انتقال به صفحه موردنظر…');setTimeout(()=>{const next=new URLSearchParams(location.search).get('next');location.href=['cart.html','admin.html'].includes(next)?next:'index.html';},650);}
       }catch(err){setMsg(err.message||'خطا در ورود یا ساخت حساب.',true);}finally{submit.disabled=false;}
     };
   }
