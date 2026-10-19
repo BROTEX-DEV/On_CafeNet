@@ -41,3 +41,7 @@ body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(65,151,101,.55);outline-offset:3px}
 @media(hover:hover){.float-card:hover,.device:hover{filter:drop-shadow(0 12px 20px rgba(41,89,61,.12));transform:translateY(-4px)}}
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.on-reveal{opacity:1;transform:none}}
+
+
+/* ON Store v1.0.4 — animations disabled by request */
+*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
