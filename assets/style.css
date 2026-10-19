@@ -154,3 +154,20 @@ img,video,iframe,canvas,svg{max-width:100%}
  .search-box{grid-column:auto}
  .trust-strip{grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* ON PAY — internal invoice flow (no real payment processing) */
+.onpay-panel{margin:18px 0;padding:18px;border:1px solid #dcebe1;border-radius:18px;background:linear-gradient(145deg,#f2faf5,#fff);text-align:right}
+.onpay-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.onpay-mark{font:900 20px/1 Arial,sans-serif;letter-spacing:-1px;color:#17251f}.onpay-mark span{color:#287b5c;margin-left:4px}
+.onpay-badge{font-size:10px;font-weight:700;color:#287b5c;background:#dff4e9;padding:5px 9px;border-radius:999px}
+.onpay-panel h3{margin:14px 0 4px;font-size:15px}.onpay-panel p{font-size:12px;color:#6e7d74;margin:0;line-height:2}
+.onpay-status{display:flex;justify-content:space-between;gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid #dcebe1;font-size:12px}.onpay-status span{color:#718078}.onpay-status strong{color:#a45d31}
+.onpay-receipt{max-width:650px;margin:30px auto;padding:clamp(22px,5vw,42px);border:1px solid var(--line);border-radius:24px;background:#fff;text-align:center;box-shadow:var(--shadow)}
+.onpay-receipt-icon{width:52px;height:52px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;background:var(--mint);color:var(--green);font-size:27px;font-weight:800}
+.onpay-receipt h2{margin:8px 0;font-size:clamp(22px,4vw,30px)}.onpay-receipt>p{color:var(--muted);font-size:13px}
+.onpay-receipt-items{margin:24px 0 0;text-align:right;border-top:1px solid var(--line)}
+.onpay-receipt-items>div,.onpay-receipt-total{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);font-size:12px}
+.onpay-receipt-items b{white-space:nowrap}.onpay-receipt-total{font-size:14px;font-weight:700;border-bottom:0}
+.onpay-unpaid{display:flex;flex-direction:column;gap:5px;text-align:right;margin:14px 0 22px;padding:14px;border-radius:13px;background:#fff4e8;color:#8b5429;font-size:12px}.onpay-unpaid span{line-height:1.9;color:#7e6b58}
+@media(max-width:560px){.onpay-panel{padding:14px}.onpay-receipt{padding:20px 15px}.onpay-receipt-items>div,.onpay-receipt-total{font-size:11px}}
