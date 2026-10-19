@@ -1,4 +1,4 @@
-/* ON Store v1.0.2 — subtle scroll reveal and click feedback */
+/* ON Store v1.0.3 — subtle scroll reveal and click feedback */
 (() => {
   const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced) return;
