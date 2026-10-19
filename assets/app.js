@@ -79,15 +79,59 @@
   async function loginPage(){
     const form=$('#auth-form'),msg=$('#auth-message'),switchBtn=$('#auth-switch'),submit=$('#auth-submit'),heading=$('#auth-heading'),subtitle=$('#auth-subtitle'),signed=$('#signed-in');
     const setMsg=(s,err=false)=>{msg.textContent=s;msg.classList.toggle('error',err)};
+    let otpPending=false,otpPhone='';
+    const normalizePhone=value=>{
+      let p=String(value||'').replace(/[۰-۹]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c))).replace(/[٠-٩]/g,c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c))).replace(/[\s()-]/g,'');
+      if(p.startsWith('00'))p='+'+p.slice(2);
+      if(p.startsWith('09'))p='+98'+p.slice(1);
+      else if(p.startsWith('9')&&p.length===10)p='+98'+p;
+      else if(p.startsWith('98')&&!p.startsWith('+'))p='+'+p;
+      return p;
+    };
     if(!db()){setMsg('اتصال Supabase آماده نیست؛ تنظیمات را بررسی کن.',true);return;}
     const {data:{session}}=await db().auth.getSession();
-    if(session){form.classList.add('hidden');signed.classList.remove('hidden');signed.innerHTML='<b>وارد شدی.</b><p>'+escapeHtml(session.user.email)+'</p><a class="btn btn-primary" href="index.html">رفتن به فروشگاه</a> <a class="btn btn-outline" href="admin.html">پنل مدیریت</a> <button class="btn btn-outline" id="logout-btn">خروج</button>';$('#logout-btn').onclick=async()=>{await db().auth.signOut();location.reload();};}
-    switchBtn.onclick=()=>{signupMode=!signupMode;heading.textContent=signupMode?'ساخت حساب کاربری':'ورود به حساب';subtitle.textContent=signupMode?'با ایمیل خودت یک حساب بساز.':'برای پیگیری سفارش‌ها وارد حساب خودت شو.';submit.innerHTML=signupMode?'ساخت حساب <span>←</span>':'ورود <span>←</span>';switchBtn.textContent=signupMode?'ورود به حساب':'ساخت حساب';$('#switch-text').textContent=signupMode?'قبلاً حساب ساخته‌ای؟':'حساب کاربری نداری؟';$('#auth-password').autocomplete=signupMode?'new-password':'current-password';setMsg('');};
-    form.onsubmit=async e=>{e.preventDefault();submit.disabled=true;setMsg('در حال انجام…');const email=$('#auth-email').value.trim(),password=$('#auth-password').value;let result;
-      try{result=signupMode?await db().auth.signUp({email,password}):await db().auth.signInWithPassword({email,password});if(result.error)throw result.error;
-        if(signupMode&&!result.data.session){setMsg('حساب ساخته شد. اگر تأیید ایمیل فعال باشد، ایمیلت را بررسی کن.');}
-        else{setMsg('ورود موفق بود. در حال انتقال به صفحه موردنظر…');setTimeout(()=>{const next=new URLSearchParams(location.search).get('next');location.href=['cart.html','admin.html'].includes(next)?next:'index.html';},650);}
-      }catch(err){setMsg(err.message||'خطا در ورود یا ساخت حساب.',true);}finally{submit.disabled=false;}
+    if(session){form.classList.add('hidden');signed.classList.remove('hidden');signed.innerHTML='<b>وارد شدی.</b><p>'+escapeHtml(session.user.phone||session.user.email||'حساب کاربری')+'</p><a class="btn btn-primary" href="index.html">رفتن به فروشگاه</a> <a class="btn btn-outline" href="admin.html">پنل مدیریت</a> <button class="btn btn-outline" id="logout-btn">خروج</button>';$('#logout-btn').onclick=async()=>{await db().auth.signOut();location.reload();};}
+    const otpInput=()=>$('#auth-otp');
+    switchBtn.onclick=()=>{
+      if(otpPending){otpPending=false;otpInput()?.remove();}
+      signupMode=!signupMode;heading.textContent=signupMode?'ساخت حساب کاربری':'ورود به حساب';
+      subtitle.textContent=signupMode?'با شماره تلفن و رمز عبور حساب بساز.':'با شماره تلفن و رمز عبورت وارد شو.';
+      submit.innerHTML=signupMode?'ساخت حساب <span>←</span>':'ورود <span>←</span>';
+      switchBtn.textContent=signupMode?'ورود به حساب':'ساخت حساب';
+      $('#switch-text').textContent=signupMode?'قبلاً حساب ساخته‌ای؟':'حساب کاربری نداری؟';
+      $('#auth-password').autocomplete=signupMode?'new-password':'current-password';
+      setMsg('');
+    };
+    form.onsubmit=async e=>{
+      e.preventDefault();submit.disabled=true;setMsg('در حال انجام…');
+      const phone=normalizePhone($('#auth-phone').value),password=$('#auth-password').value;let result;
+      try{
+        if(otpPending){
+          const token=otpInput()?.value.trim();
+          if(!token)throw new Error('کد تأیید پیامکی را وارد کن.');
+          result=await db().auth.verifyOtp({phone:otpPhone,token,type:'sms'});
+          if(result.error)throw result.error;
+          otpPending=false;otpInput()?.remove();
+        }else{
+          if(!/^\+[1-9]\d{7,14}$/.test(phone))throw new Error('شماره تلفن را با کد کشور وارد کن؛ برای ایران مثل 09123456789.');
+          result=signupMode?await db().auth.signUp({phone,password}):await db().auth.signInWithPassword({phone,password});
+          if(result.error)throw result.error;
+          if(signupMode&&!result.data.session){
+            otpPending=true;otpPhone=phone;
+            if(!otpInput()){
+              const label=document.createElement('label');label.id='auth-otp-wrap';label.innerHTML='کد تأیید پیامکی<input id="auth-otp" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="کد پیامک‌شده" required>';
+              $('#auth-password').closest('label').insertAdjacentElement('afterend',label);
+            }
+            setMsg('کد تأیید به شماره‌ات ارسال شد. کد پیامک را وارد کن و دوباره دکمه را بزن.');
+            submit.innerHTML='تأیید شماره و ساخت حساب <span>←</span>';
+            otpInput()?.focus();
+          }else{
+            setMsg(signupMode?'حساب ساخته شد.':'ورود موفق بود. در حال انتقال…');
+            setTimeout(()=>{const next=new URLSearchParams(location.search).get('next');location.href=['cart.html','admin.html'].includes(next)?next:'index.html';},650);
+          }
+        }
+      }catch(err){setMsg(err.message||'خطا در ورود یا ساخت حساب.',true);}
+      finally{submit.disabled=false;}
     };
   }
   async function adminPage(){
