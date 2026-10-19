@@ -112,6 +112,9 @@
           result=await db().auth.verifyOtp({phone:otpPhone,token,type:'sms'});
           if(result.error)throw result.error;
           otpPending=false;otpInput()?.remove();
+          setMsg('شماره تلفن تأیید شد. حساب کاربری فعال است؛ در حال انتقال…');
+          setTimeout(()=>{const next=new URLSearchParams(location.search).get('next');location.href=['cart.html','admin.html'].includes(next)?next:'index.html';},650);
+          return;
         }else{
           if(!/^\+[1-9]\d{7,14}$/.test(phone))throw new Error('شماره تلفن را با کد کشور وارد کن؛ برای ایران مثل 09123456789.');
           result=signupMode?await db().auth.signUp({phone,password}):await db().auth.signInWithPassword({phone,password});
