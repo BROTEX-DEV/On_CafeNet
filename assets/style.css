@@ -171,3 +171,93 @@ img,video,iframe,canvas,svg{max-width:100%}
 .onpay-receipt-items b{white-space:nowrap}.onpay-receipt-total{font-size:14px;font-weight:700;border-bottom:0}
 .onpay-unpaid{display:flex;flex-direction:column;gap:5px;text-align:right;margin:14px 0 22px;padding:14px;border-radius:13px;background:#fff4e8;color:#8b5429;font-size:12px}.onpay-unpaid span{line-height:1.9;color:#7e6b58}
 @media(max-width:560px){.onpay-panel{padding:14px}.onpay-receipt{padding:20px 15px}.onpay-receipt-items>div,.onpay-receipt-total{font-size:11px}}
+
+
+/* ON CafeNet v1.1.0 — refined editorial storefront, no gaming/neon styling */
+:root{
+ --bg:#f5f1e9;--paper:#fffdf8;--ink:#292820;--muted:#777468;--line:#e5dfd3;
+ --green:#66764c;--green-dark:#465536;--mint:#e9eddf;--peach:#efe2d3;
+ --shadow:0 14px 38px rgba(52,45,31,.07);--radius:18px;
+}
+body{background:var(--bg);color:var(--ink)}
+body::before{background:radial-gradient(ellipse at 10% 0%,rgba(159,148,107,.10),transparent 34%),radial-gradient(ellipse at 90% 28%,rgba(190,151,112,.08),transparent 32%);animation:none!important}
+.topbar{background:rgba(250,247,240,.94);border-bottom-color:var(--line);backdrop-filter:blur(14px)}
+.brand-mark span,.auth-shape span{color:var(--green)}
+.brand-caption{border-color:var(--line)}
+.nav a{color:#777568}.nav a:hover,.nav a.active{color:var(--green)}
+.cart-link{background:#eeeadf;border-color:#e3ddcf;color:var(--ink)}
+.cart-link b{background:var(--green)}
+.eyebrow,.text-link,.text-link span{color:var(--green)}
+.eyebrow i{background:#9aa77b;box-shadow:0 0 0 4px #e9eddf}
+.hero{min-height:515px}
+.hero h1{letter-spacing:0;color:#292820}
+.hero h1 em,.why-inner h2 em,.auth-side h2 em{color:var(--green)}
+.btn{border-radius:10px;box-shadow:none}
+.btn-primary{background:var(--green);box-shadow:none}
+.btn-primary:hover{background:var(--green-dark);box-shadow:none}
+.btn-dark{background:#292820}
+.btn-outline{background:transparent;border-color:#d8d0c2}
+.hero-art .art-orbit{border-color:#dcd4c5}
+.hero-art .orbit-two{border-color:#d8cfbe}
+.device{background:#30382a;box-shadow:0 24px 52px rgba(47,49,34,.16);border-radius:20px}
+.device-head>span{background:#c1c99e}
+.device-head label,.device-bottom{color:#d0d3bd}
+.device-label{color:#c7d0a0}
+.device-title strong,.device-bottom b{color:#30382a;background:#c7d0a0}
+.device-bars i{background:#4d5940}.device-bars i:nth-child(2){background:#c7d0a0}.device-bars i:nth-child(3){background:#c9a88b}
+.float-card{background:#fffdf8;border-color:#e5dfd3;box-shadow:0 12px 30px rgba(52,45,31,.08)}
+.mint{background:#e9eddf;color:#53623d}.peach{background:#efe2d3;color:#916d4f}
+.spark{color:#9c9b78}
+.trust-strip{border-color:var(--line)}
+.trust-strip div{border-left-color:var(--line)}
+.trust-strip b{color:#99937e}
+.product-card{background:var(--paper);border-color:var(--line);border-radius:15px;box-shadow:none}
+.product-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(52,45,31,.08);border-color:#d2c9b7}
+.product-card:hover::before{border-color:rgba(102,118,76,.2);box-shadow:none}
+.product-visual{background:linear-gradient(135deg,#e8e8d9,#f7f3e9)}
+.product-visual::before,.product-visual::after{border-color:#c9ccb2}
+.product-visual .visual-symbol{border-radius:14px;background:#fffdf8;box-shadow:0 10px 22px rgba(55,59,38,.08);color:var(--green)}
+.product-card:nth-child(3n+2) .product-visual{background:linear-gradient(135deg,#f0e3d5,#faf4ec)}
+.product-card:nth-child(3n+2) .visual-symbol{color:#9a7150}
+.product-card:nth-child(3n) .product-visual{background:linear-gradient(135deg,#e6e6dc,#f7f5ef)}
+.product-card:nth-child(3n) .visual-symbol{color:#6e7559}
+.product-tag{background:#fffdf0;border-color:#f5f0e3;color:#5f6b46}
+.product-info h3{color:#302f27}
+.add-btn{background:#e9eddf;color:#53623d;border-radius:9px}
+.add-btn:hover{background:var(--green);color:white}
+.why-section{background:#eae9dc}
+.why-grid article{border-right-color:#d5d4c5}
+.why-grid article>span{background:#fffdf8;color:var(--green)}
+.cta{background:var(--paper);border-color:var(--line);border-radius:18px}
+.footer{border-top-color:var(--line)}
+.result-pill,.admin-badge,.search-box,.catalog-tools select{background:var(--paper);border-color:var(--line)}
+.search-box span{color:#8a8c70}
+.catalog-tools select{color:var(--ink);outline-color:#aab18f}
+.loading-card,.empty-state,.notice-card{border-color:#d8d1c2;background:rgba(255,253,248,.75)}
+.detail-visual{background:linear-gradient(135deg,#e8e8d9,#f7f3e9);border-radius:18px}
+.detail-visual .visual-symbol{color:var(--green)}
+.cart-items,.summary-card,.admin-form-card,.admin-list{background:var(--paper);border-color:var(--line);border-radius:16px}
+.cart-thumb{background:#e9eddf;color:var(--green)}
+.qty-control{border-color:var(--line)}
+.qty-control button{color:var(--green)}
+.checkout-form input,.checkout-form textarea,.auth-card input,.admin-form input,.admin-form textarea{background:#fffdf8;border-color:#ded7ca;outline-color:#aab18f}
+.auth-wrap{background:var(--paper);border-color:var(--line);box-shadow:0 18px 48px rgba(52,45,31,.07);border-radius:20px}
+.auth-side{background:linear-gradient(145deg,#e9e9dc,#f3eee3)}
+.auth-shape{color:rgba(255,253,248,.68)}
+.signed-in{background:#edf0e4}
+.admin-tabs button{background:var(--paper);border-color:var(--line)}
+.admin-tabs button.active{background:var(--green);border-color:var(--green)}
+.admin-form input[type=file]{background:#f7f4ed;border-color:#d1c9b8}
+.image-upload-preview{background:#fffdf8;border-color:var(--line)}
+.image-upload-preview button{background:#30382a}
+.onpay-panel{background:linear-gradient(145deg,#f2f0e5,#fffdf8);border-color:#e1dccb}
+.onpay-mark span{color:var(--green)}
+.onpay-badge{color:var(--green-dark);background:#e9eddf}
+.onpay-status strong{color:#946746}
+.onpay-receipt{background:var(--paper);border-color:var(--line);box-shadow:var(--shadow)}
+.onpay-receipt-icon{background:#e9eddf;color:var(--green)}
+.onpay-unpaid{background:#f4eadb;color:#805b38}
+.onpay-unpaid span{color:#796a58}
+.toast{background:#30382a;box-shadow:0 12px 28px rgba(47,49,34,.14)}
+.toast.error{background:#8c4c40}
+@media(max-width:640px){.nav{background:var(--paper);border-bottom-color:var(--line)}}
