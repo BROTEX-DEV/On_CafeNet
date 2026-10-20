@@ -261,3 +261,26 @@ body::before{background:radial-gradient(ellipse at 10% 0%,rgba(159,148,107,.10),
 .toast{background:#30382a;box-shadow:0 12px 28px rgba(47,49,34,.14)}
 .toast.error{background:#8c4c40}
 @media(max-width:640px){.nav{background:var(--paper);border-bottom-color:var(--line)}}
+
+/* ON CafeNet v1.1.1 — admin tools and customer order history */
+.admin-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 22px}
+.admin-stats article{padding:18px;border:1px solid var(--line);border-radius:15px;background:var(--paper);display:flex;flex-direction:column;gap:8px}
+.admin-stats article span{font-size:12px;color:var(--muted)}
+.admin-stats article strong{font-size:26px;color:var(--green-dark);font-weight:800}
+.admin-filter,.admin-filter-row{margin:14px 0}
+.admin-filter-row{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:12px}
+.admin-filter-row select{border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:10px 12px;color:var(--ink);font:inherit}
+.my-orders{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.my-orders h2{font-size:18px;margin:0 0 14px}
+.my-order-card{padding:15px;margin:10px 0;background:var(--paper);border:1px solid var(--line);border-radius:13px}
+.my-order-head,.my-order-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.my-order-head span{font-size:11px;color:var(--muted)}
+.my-order-card p{font-size:12px;line-height:1.9;color:var(--muted)}
+.my-order-foot strong{font-size:13px;color:var(--green-dark)}
+.my-order-status{font-size:11px;padding:5px 9px;border-radius:99px;background:#ece8dc;color:#685f4d}
+.my-order-status.status-confirmed{background:#e4eddf;color:#345b35}
+.my-order-status.status-delivered{background:#dcebe4;color:#235c48}
+.my-order-status.status-cancelled{background:#f5e3de;color:#8d4136}
+.account-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+@media(max-width:700px){.admin-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-filter-row{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:380px){.admin-stats article{padding:12px}.admin-stats article strong{font-size:22px}}
