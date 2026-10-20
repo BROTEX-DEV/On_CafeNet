@@ -90,7 +90,7 @@
     };
     if(!db()){setMsg('اتصال Supabase آماده نیست؛ تنظیمات را بررسی کن.',true);return;}
     const {data:{session}}=await db().auth.getSession();
-    if(session){form.classList.add('hidden');signed.classList.remove('hidden');signed.innerHTML='<b>وارد شدی.</b><p>'+escapeHtml(session.user.phone||session.user.email||'حساب کاربری')+'</p><a class="btn btn-primary" href="index.html">رفتن به فروشگاه</a> <a class="btn btn-outline" href="admin.html">پنل مدیریت</a> <button class="btn btn-outline" id="logout-btn">خروج</button>';$('#logout-btn').onclick=async()=>{await db().auth.signOut();location.reload();};}
+    if(session){form.classList.add('hidden');signed.classList.remove('hidden');signed.innerHTML='<b>وارد شدی.</b><p>'+escapeHtml(session.user.phone||session.user.email||'حساب کاربری')+'</p><div class="account-actions"><a class="btn btn-primary" href="products.html">رفتن به فروشگاه</a> <a class="btn btn-outline" href="admin.html">پنل مدیریت</a> <button class="btn btn-outline" id="logout-btn">خروج</button></div><section class="my-orders"><h2>سفارش‌های من</h2><div id="my-orders-list"></div></section>';$('#logout-btn').onclick=async()=>{await db().auth.signOut();location.reload();};loadMyOrders(session.user.id);}
     const otpInput=()=>$('#auth-otp');
     switchBtn.onclick=()=>{
       if(otpPending){otpPending=false;otpInput()?.remove();}
@@ -137,6 +137,25 @@
       finally{submit.disabled=false;}
     };
   }
+  async function refreshAdminStats(){
+    const [productsResult,ordersResult]=await Promise.all([
+      db().from('store_products').select('id,is_active'),
+      db().from('store_orders').select('id,status,total_toman')
+    ]);
+    if(productsResult.error||ordersResult.error)return;
+    const ps=productsResult.data||[],os=ordersResult.data||[];
+    const set=(id,value)=>{const el=$('#'+id);if(el)el.textContent=fa(value);};
+    set('admin-stat-products',ps.length);set('admin-stat-active',ps.filter(p=>p.is_active).length);
+    set('admin-stat-orders',os.length);set('admin-stat-pending',os.filter(o=>o.status==='pending').length);
+  }
+  async function loadMyOrders(userId){
+    const root=$('#my-orders-list');if(!root)return;
+    root.innerHTML='<p class="loading-card">در حال دریافت سفارش‌ها…</p>';
+    const {data,error}=await db().from('store_orders').select('id,total_toman,status,created_at,store_order_items(product_name,unit_price_toman,quantity)').eq('user_id',userId).order('created_at',{ascending:false});
+    if(error){root.innerHTML='<p class="auth-message error">دریافت سفارش‌ها ناموفق بود: '+escapeHtml(error.message)+'</p>';return;}
+    const labels={pending:'در انتظار بررسی · پرداخت نشده',confirmed:'تأیید شده · پرداخت همچنان جداگانه بررسی می‌شود',delivered:'تحویل شده',cancelled:'لغو شده'};
+    root.innerHTML=data?.length?data.map(o=>'<article class="my-order-card"><div class="my-order-head"><b>سفارش '+escapeHtml(o.id.slice(0,8).toUpperCase())+'</b><span>'+new Date(o.created_at).toLocaleDateString('fa-IR')+'</span></div><p>'+escapeHtml((o.store_order_items||[]).map(i=>i.product_name+' × '+i.quantity).join('، '))+'</p><div class="my-order-foot"><strong>'+money(o.total_toman)+'</strong><span class="my-order-status status-'+escapeHtml(o.status)+'">'+escapeHtml(labels[o.status]||o.status)+'</span></div></article>').join(''):'<div class="empty-state"><h3>هنوز سفارشی ثبت نکردی</h3><p>بعد از ثبت سفارش، وضعیت آن را اینجا می‌بینی.</p><a class="btn btn-primary" href="products.html">مشاهده محصولات</a></div>';
+  }
   async function adminPage(){
     const gate=$('#admin-gate'),panel=$('#admin-panel');
     if(!db()){gate.textContent='اتصال Supabase آماده نیست.';return;}
@@ -160,14 +179,19 @@
     if(error){root.innerHTML='<p class="auth-message error">'+escapeHtml(error.message)+'</p>';return;}
     root.innerHTML=data.length?data.map(p=>'<article class="admin-product-row"><div><h3>'+escapeHtml(p.name)+'</h3><p>'+money(p.price_toman)+' · '+escapeHtml(p.category)+' · '+(p.is_active?'نمایش داده می‌شود':'پنهان')+'</p></div><div class="row-actions"><button data-edit="'+p.id+'">ویرایش</button><button class="danger" data-toggle="'+p.id+'" data-active="'+p.is_active+'">'+(p.is_active?'پنهان‌کردن':'نمایش')+'</button></div></article>').join(''):'<div class="empty-state"><h3>هنوز محصولی نداری</h3><p>از فرم بالا اولین محصول را ثبت کن.</p></div>';
     $$('[data-edit]',root).forEach(b=>b.onclick=()=>{const p=data.find(x=>x.id===b.dataset.edit);$('#edit-product-id').value=p.id;$('#admin-name').value=p.name;$('#admin-slug').value=p.slug;$('#admin-category').value=p.category;$('#admin-price').value=p.price_toman;$('#admin-image').value=p.image_url||'';$('#admin-image-file').value='';$('#admin-image-preview').innerHTML=p.image_url?'<img src="'+escapeHtml(p.image_url)+'" alt="تصویر فعلی محصول"><button type="button" id="remove-image-preview" aria-label="پاک کردن تصویر">×</button>':'<span>پیش‌نمایش تصویر</span>';const removePreview=$('#remove-image-preview');if(removePreview)removePreview.onclick=()=>{$('#admin-image-file').value='';$('#admin-image').value='';$('#admin-image-preview').innerHTML='<span>پیش‌نمایش تصویر</span>';};$('#admin-description').value=p.description||'';$('#admin-active').checked=p.is_active;$('#product-form-title').textContent='ویرایش محصول';window.scrollTo({top:0,behavior:'smooth'});});
-    $$('[data-toggle]',root).forEach(b=>b.onclick=async()=>{const {error}=await db().from('store_products').update({is_active:b.dataset.active!=='true',updated_at:new Date().toISOString()}).eq('id',b.dataset.toggle);if(error)toast(error.message,true);else await loadAdminProducts();});
+    $('[data-toggle]',root).forEach(b=>b.onclick=async()=>{b.disabled=true;const {error}=await db().from('store_products').update({is_active:b.dataset.active!=='true',updated_at:new Date().toISOString()}).eq('id',b.dataset.toggle);if(error){toast(error.message,true);b.disabled=false;}else{await loadAdminProducts();await refreshAdminStats();}});
+    const search=$('#admin-product-search');search?.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();$('.admin-product-row',root).forEach(row=>row.classList.toggle('hidden',!row.textContent.toLowerCase().includes(q)));});
   }
   async function loadAdminOrders(){
     const root=$('#admin-order-list');const {data,error}=await db().from('store_orders').select('id,user_id,total_toman,status,customer_name,customer_contact,note,created_at,store_order_items(product_name,unit_price_toman,quantity)').order('created_at',{ascending:false});
     if(error){root.innerHTML='<p class="auth-message error">'+escapeHtml(error.message)+'</p>';return;}
     const labels={pending:'در انتظار بررسی (پرداخت تأیید نشده)',confirmed:'سفارش تأیید شده',delivered:'تحویل شده',cancelled:'لغو شده'};
     root.innerHTML=data.length?data.map(o=>'<article class="admin-order-row"><div><h3>سفارش '+escapeHtml(o.id.slice(0,8))+' · '+escapeHtml(o.customer_name)+'</h3><p>'+escapeHtml(o.customer_contact)+' · '+new Date(o.created_at).toLocaleDateString('fa-IR')+' · '+money(o.total_toman)+'</p><p>'+escapeHtml((o.store_order_items||[]).map(i=>i.product_name+' × '+i.quantity).join('، '))+'</p><small>'+escapeHtml(o.note||'بدون توضیحات')+'</small></div><div class="row-actions"><select class="status-select" data-order-status="'+o.id+'">'+Object.keys(labels).map(s=>'<option value="'+s+'" '+(s===o.status?'selected':'')+'>'+labels[s]+'</option>').join('')+'</select></div></article>').join(''):'<div class="empty-state"><h3>هنوز سفارشی ثبت نشده</h3></div>';
-    $$('[data-order-status]',root).forEach(s=>s.onchange=async()=>{const {error}=await db().from('store_orders').update({status:s.value}).eq('id',s.dataset.orderStatus);if(error)toast(error.message,true);else toast('وضعیت سفارش به‌روزرسانی شد.');});
+    $('[data-order-status]',root).forEach(s=>s.onchange=async()=>{s.disabled=true;const {error}=await db().from('store_orders').update({status:s.value}).eq('id',s.dataset.orderStatus);if(error){toast(error.message,true);s.disabled=false;}else{toast('وضعیت سفارش به‌روزرسانی شد.');await loadAdminOrders();await refreshAdminStats();}});
+    const search=$('#admin-order-search'),filter=$('#admin-order-filter');
+    const applyOrderFilters=()=>{$('.admin-order-row',root).forEach(row=>{const q=(search?.value||'').trim().toLowerCase(),status=row.querySelector('[data-order-status]')?.value||'';row.classList.toggle('hidden',!row.textContent.toLowerCase().includes(q)||(filter?.value&&status!==filter.value));});};
+    search?.addEventListener('input',applyOrderFilters);filter?.addEventListener('change',applyOrderFilters);applyOrderFilters();
+    await refreshAdminStats();
   }
   function setupMenu(){const button=$('.menu-toggle'),nav=$('.nav');if(button&&nav)button.onclick=()=>nav.classList.toggle('open');}
   document.addEventListener('DOMContentLoaded',async()=>{
