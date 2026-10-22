@@ -307,3 +307,46 @@ body::before{background:radial-gradient(ellipse at 10% 0%,rgba(159,148,107,.10),
 :root[data-theme="dark"] .device-bars i{background:#294735}
 :root[data-theme="dark"] .theme-toggle{background:#142219;color:#e7f8eb;border-color:#2b4934}
 @media(max-width:640px){.theme-toggle{padding:7px 8px;gap:4px;font-size:10px}.nav-actions{gap:5px}.theme-label{display:none}.theme-icon{font-size:18px}}
+
+/* Improve contrast for every text element in dark theme */
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] p,
+:root[data-theme="dark"] li,
+:root[data-theme="dark"] label,
+:root[data-theme="dark"] small,
+:root[data-theme="dark"] strong,
+:root[data-theme="dark"] b,
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4,
+:root[data-theme="dark"] h5,
+:root[data-theme="dark"] h6,
+:root[data-theme="dark"] .section-title,
+:root[data-theme="dark"] .hero-title,
+:root[data-theme="dark"] .product-title,
+:root[data-theme="dark"] .price,
+:root[data-theme="dark"] .cart-item-title,
+:root[data-theme="dark"] .summary-card *,
+:root[data-theme="dark"] .product-card *,
+:root[data-theme="dark"] .auth-card *,
+:root[data-theme="dark"] .admin-form-card *,
+:root[data-theme="dark"] .admin-list * { color:var(--ink); }
+:root[data-theme="dark"] .muted,
+:root[data-theme="dark"] .subtitle,
+:root[data-theme="dark"] .section-desc,
+:root[data-theme="dark"] .product-meta,
+:root[data-theme="dark"] .form-hint,
+:root[data-theme="dark"] .footer,
+:root[data-theme="dark"] .footer * { color:var(--muted); }
+:root[data-theme="dark"] a:not(.btn):not(.cart-link) { color:#9be9b4; }
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder { color:#8da495; opacity:1; }
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] select { color:var(--ink); }
+:root[data-theme="dark"] .btn-primary,
+:root[data-theme="dark"] .add-btn,
+:root[data-theme="dark"] .cart-link { color:#06130a; }
+:root[data-theme="dark"] .badge,
+:root[data-theme="dark"] .tag { color:#b6f4c9; }
