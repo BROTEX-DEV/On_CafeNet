@@ -194,6 +194,19 @@
     await refreshAdminStats();
   }
   function setupMenu(){const button=$('.menu-toggle'),nav=$('.nav');if(button&&nav)button.onclick=()=>nav.classList.toggle('open');}
+  function setupTheme(){
+    const key='on-cafe-net-theme';
+    const apply=theme=>{
+      document.documentElement.dataset.theme=theme;
+      document.querySelectorAll('[data-theme-toggle]').forEach(btn=>{
+        const dark=theme==='dark',icon=btn.querySelector('.theme-icon'),label=btn.querySelector('.theme-label');
+        if(icon)icon.textContent=dark?'☀':'☾';if(label)label.textContent=dark?'حالت روشن':'حالت تیره';
+        btn.setAttribute('aria-label',dark?'تغییر به تم روشن':'تغییر به تم تیره');btn.title=dark?'تغییر به تم روشن':'تغییر به تم تیره';
+      });try{localStorage.setItem(key,theme)}catch(e){}
+    };
+    let saved='light';try{saved=localStorage.getItem(key)||'light'}catch(e){}apply(saved==='dark'?'dark':'light');
+    document.querySelectorAll('[data-theme-toggle]').forEach(btn=>btn.addEventListener('click',()=>apply(document.documentElement.dataset.theme==='dark'?'light':'dark')));
+  }
   document.addEventListener('DOMContentLoaded',async()=>{
     setupTheme();updateCartCount();setupMenu();
     const page=document.body.dataset.page;
