@@ -195,7 +195,7 @@
   }
   function setupMenu(){const button=$('.menu-toggle'),nav=$('.nav');if(button&&nav)button.onclick=()=>nav.classList.toggle('open');}
   document.addEventListener('DOMContentLoaded',async()=>{
-    updateCartCount();setupMenu();
+    setupTheme();updateCartCount();setupMenu();
     const page=document.body.dataset.page;
     if(page==='home')await home();if(page==='products')await catalog();if(page==='product')await productPage();if(page==='cart')await cartPage();if(page==='login')await loginPage();if(page==='admin')await adminPage();
     document.addEventListener('click',e=>{const b=e.target.closest('[data-add]');if(b){const p=products.find(x=>x.id===b.dataset.add);if(p)addCart(p);}});
