@@ -29,7 +29,7 @@
   const card = (p,i=0) => `<article class="product-card"><a href="product.html?id=${encodeURIComponent(p.id)}" class="product-visual">${p.image_url?'<img loading="lazy" src="'+escapeHtml(p.image_url)+'" alt="'+escapeHtml(p.name)+'">':'<span class="visual-symbol">'+icons[i%icons.length]+'</span>'}<span class="product-tag">${escapeHtml(p.category||'دیجیتال')}</span></a><div class="product-info"><span class="product-category">${escapeHtml(p.category||'محصول دیجیتال')}</span><h3><a href="product.html?id=${encodeURIComponent(p.id)}">${escapeHtml(p.name)}</a></h3><p>${escapeHtml(p.description||'محصول دیجیتال برای استفاده روزمره.')}</p><div class="product-bottom"><span class="price">${money(p.price_toman)}<small> · پرداخت در مرحله سفارش</small></span><button class="add-btn" data-add="${escapeHtml(p.id)}" aria-label="افزودن به سبد خرید" title="افزودن به سبد خرید">+</button></div></div></article>`;
   async function loadProducts(){
     try {
-      if(!db()) throw new Error('supabase not configured');
+      if(!db()) throw new Error('فعلاً امکان اتصال وجود ندارد. لطفاً کمی بعد دوباره تلاش کن.');
       const {data,error}=await db().from('store_products').select('id,name,slug,description,category,price_toman,image_url,is_active,created_at').eq('is_active',true).order('created_at',{ascending:false});
       if(error) throw error;
       products=data||[];
@@ -88,7 +88,7 @@
       else if(p.startsWith('98')&&!p.startsWith('+'))p='+'+p;
       return p;
     };
-    if(!db()){setMsg('اتصال Supabase آماده نیست؛ تنظیمات را بررسی کن.',true);return;}
+    if(!db()){setMsg('فعلاً امکان اتصال به حساب کاربری وجود ندارد. لطفاً کمی بعد دوباره تلاش کن.',true);return;}
     const {data:{session}}=await db().auth.getSession();
     if(session){form.classList.add('hidden');signed.classList.remove('hidden');signed.innerHTML='<b>وارد شدی.</b><p>'+escapeHtml(session.user.phone||session.user.email||'حساب کاربری')+'</p><div class="account-actions"><a class="btn btn-primary" href="products.html">رفتن به فروشگاه</a> <a class="btn btn-outline" href="admin.html">پنل مدیریت</a> <button class="btn btn-outline" id="logout-btn">خروج</button></div><section class="my-orders"><h2>سفارش‌های من</h2><div id="my-orders-list"></div></section>';$('#logout-btn').onclick=async()=>{await db().auth.signOut();location.reload();};loadMyOrders(session.user.id);}
     const otpInput=()=>$('#auth-otp');
@@ -158,12 +158,12 @@
   }
   async function adminPage(){
     const gate=$('#admin-gate'),panel=$('#admin-panel');
-    if(!db()){gate.textContent='اتصال Supabase آماده نیست.';return;}
+    if(!db()){gate.textContent='فعلاً امکان بارگذاری پنل وجود ندارد. لطفاً کمی بعد دوباره تلاش کن.';return;}
     const {data:{session}}=await db().auth.getSession();
     if(!session){gate.innerHTML='برای ورود به پنل مدیریت ابتدا <a href="login.html?next=admin.html">وارد حساب</a> شو.';return;}
     const {data:admins,error}=await db().from('store_admins').select('user_id').eq('user_id',session.user.id).limit(1);
-    if(error){gate.textContent='بررسی دسترسی ناموفق بود: '+error.message;return;}
-    if(!admins?.length){gate.innerHTML='این حساب هنوز دسترسی مدیریت ندارد.<br><br>برای فعال‌سازی، ابتدا حساب بساز و سپس شناسه کاربری خود را در جدول <code>store_admins</code> از پنل Supabase اضافه کن. شناسه فعلی: <code>'+escapeHtml(session.user.id)+'</code><br><small>این بررسی سمت سرور انجام می‌شود؛ تغییر ظاهر صفحه دسترسی ادمین ایجاد نمی‌کند.</small>';return;}
+    if(error){gate.textContent='بررسی دسترسی انجام نشد. لطفاً صفحه را تازه‌سازی کن یا بعداً دوباره تلاش کن.';return;}
+    if(!admins?.length){gate.textContent='این حساب اجازه ورود به پنل مدیریت را ندارد. با حساب مدیر وارد شو.';return;}
     gate.classList.add('hidden');panel.classList.remove('hidden');await loadAdminProducts();await loadAdminOrders();
     $('#admin-signout').onclick=async()=>{await db().auth.signOut();location.href='login.html';};
     $$('[data-admin-tab]').forEach(btn=>btn.onclick=()=>{ $$('[data-admin-tab]').forEach(b=>b.classList.toggle('active',b===btn));$('#admin-products').classList.toggle('hidden',btn.dataset.adminTab!=='products');$('#admin-orders').classList.toggle('hidden',btn.dataset.adminTab!=='orders');});
