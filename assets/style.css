@@ -287,3 +287,23 @@ body::before{background:radial-gradient(ellipse at 10% 0%,rgba(159,148,107,.10),
 
 /* ON-Cafe Net avatar logo */
 .brand-logo{display:block;width:42px;height:42px;object-fit:cover;border-radius:50%;box-shadow:0 0 0 2px #d8f6e3,0 4px 14px #16c75a22}.footer .brand-logo{width:34px;height:34px}.auth-brand .brand-logo{width:48px;height:48px}
+
+/* ON-Cafe Net theme switch */
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:12px;padding:8px 11px;font-size:11px;font-weight:700;white-space:nowrap;transition:background .2s,border-color .2s}.theme-toggle:hover{border-color:var(--green);transform:translateY(-1px)}.theme-icon{font-size:16px;line-height:1;color:var(--green)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#080d0a;--paper:#111a14;--ink:#edf8f0;--muted:#9aada0;--line:#25392b;--green:#55d98a;--green-dark:#2ca967;--mint:#172f21;--peach:#38251d;--shadow:0 18px 55px #0008}
+:root[data-theme="dark"] body{background:var(--bg);color:var(--ink)}
+:root[data-theme="dark"] .topbar,:root[data-theme="dark"] .nav.open,:root[data-theme="dark"] .product-card,:root[data-theme="dark"] .float-card,:root[data-theme="dark"] .cta,:root[data-theme="dark"] .cart-items,:root[data-theme="dark"] .summary-card,:root[data-theme="dark"] .admin-form-card,:root[data-theme="dark"] .admin-list,:root[data-theme="dark"] .auth-wrap,:root[data-theme="dark"] .auth-card,:root[data-theme="dark"] .result-pill,:root[data-theme="dark"] .admin-badge,:root[data-theme="dark"] .loading-card,:root[data-theme="dark"] .empty-state,:root[data-theme="dark"] .notice-card,:root[data-theme="dark"] .search-box,:root[data-theme="dark"] .catalog-tools select,:root[data-theme="dark"] .btn-outline,:root[data-theme="dark"] .row-actions button,:root[data-theme="dark"] .status-select{background:var(--paper);color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .cart-link,:root[data-theme="dark"] .add-btn,:root[data-theme="dark"] .admin-tabs button{background:#192b20;color:#b8f3cc;border-color:#294a34}
+:root[data-theme="dark"] .nav a,:root[data-theme="dark"] .icon-link,:root[data-theme="dark"] .text-link{color:#a8e9bd}
+:root[data-theme="dark"] .why-section,:root[data-theme="dark"] .auth-side{background:#101d14}
+:root[data-theme="dark"] .product-visual,:root[data-theme="dark"] .detail-visual{background:linear-gradient(135deg,#172b1e,#0c150f)}
+:root[data-theme="dark"] .product-visual::before,:root[data-theme="dark"] .product-visual::after{border-color:#2e6540}
+:root[data-theme="dark"] .product-visual .visual-symbol,:root[data-theme="dark"] .cart-thumb{background:#192b20;color:#8be6aa}
+:root[data-theme="dark"] .checkout-form input,:root[data-theme="dark"] .checkout-form textarea,:root[data-theme="dark"] .auth-card input,:root[data-theme="dark"] .admin-form input,:root[data-theme="dark"] .admin-form textarea,:root[data-theme="dark"] .search-box input{background:#0b120d;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .why-grid article,:root[data-theme="dark"] .trust-strip div{border-color:var(--line)}
+:root[data-theme="dark"] .why-grid article>span{background:#1b3022;color:#a4f1bd}
+:root[data-theme="dark"] .auth-shape{color:#1b3022}
+:root[data-theme="dark"] .device{background:#0d1a11}
+:root[data-theme="dark"] .device-bars i{background:#294735}
+:root[data-theme="dark"] .theme-toggle{background:#142219;color:#e7f8eb;border-color:#2b4934}
+@media(max-width:640px){.theme-toggle{padding:7px 8px;gap:4px;font-size:10px}.nav-actions{gap:5px}.theme-label{display:none}.theme-icon{font-size:18px}}
